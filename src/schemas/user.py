@@ -1,7 +1,6 @@
 from datetime import datetime
-
 from fastapi import HTTPException, status
-from pydantic import BaseModel, Field, EmailStr, field_validator
+from pydantic import BaseModel, Field, EmailStr, model_validator
 
 
 class UserBaseSchema(BaseModel):
@@ -12,12 +11,13 @@ class UserBaseSchema(BaseModel):
 
 class UserCreateSchema(UserBaseSchema):
     password: str = Field(..., min_length=8, max_length=128)
-    confirm_password: str = Field(..., min_length=8, max_length=128)
+    confirm_password: str = Field(..., exclude=True)
 
-    @field_validator('password', 'confirm_password')
+    @model_validator(mode='after')
     def validate_password_and_confirm(self):
         if self.password != self.confirm_password:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Passwords must match')
+        return self
 
 
 class UserUpdateSchema(UserBaseSchema):
@@ -25,10 +25,11 @@ class UserUpdateSchema(UserBaseSchema):
     name: str | None = Field(None, min_length=3, max_length=128)
     email: EmailStr | None = Field(None, min_length=3, max_length=128)
 
-    @field_validator('username', 'name', 'email')
-    def validate_update_fields(self):
-        if self.username is None and self.email is None and self.name is None:
-            raise HTTPException(status.HTTP_400_BAD_REQUEST, "At least one of username, email or name must be set")
+    @model_validator(mode='after')
+    def at_least_one_field_set(self):
+        if not any([self.username, self.name, self.email]):
+            raise ValueError('At least one of username, name, or email must be set')
+        return self
 
 class UserRetrieveSchema(UserBaseSchema):
     id: str = Field(...)
