@@ -16,7 +16,7 @@ def get_user_by_id(db: Session, user_id: str):
 def update_user_by_id(db: Session, user_id: str, updated_user: UserUpdateSchema):
     update_count = user_repository.update_user_by_id(db, user_id, updated_user)
     if update_count > 0:
-        return updated_user.model_dump()
+        return updated_user.model_dump(exclude_unset=True)
     else:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="User not found")
 

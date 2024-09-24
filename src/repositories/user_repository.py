@@ -3,7 +3,7 @@ from src.db.models.user import User
 from src.schemas.user import UserCreateSchema, UserUpdateSchema
 
 def create_user(db: Session, user: UserCreateSchema):
-    new_user = User(username=user.name, email=user.email, password=user.password, name=user.name)
+    new_user = User(**user.model_dump())
     db.add(new_user)
     db.commit()
     db.refresh(new_user)

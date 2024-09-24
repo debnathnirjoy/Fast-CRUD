@@ -1,5 +1,5 @@
 from sqlalchemy import DateTime, String
-from uuid import uuid4
+import uuid
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql import func
 
@@ -8,7 +8,7 @@ from src.db.database import Base, engine
 
 class User(Base):
     __tablename__ = 'user'
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, server_default=str(uuid4()))
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default= lambda: str(uuid.uuid4()))
     username: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(128), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(128), nullable=False)
