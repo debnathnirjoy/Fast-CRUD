@@ -9,8 +9,8 @@ def create_user(db: Session, user: UserCreateSchema):
     db.refresh(new_user)
     return new_user
 
-def get_all_users(db: Session):
-    users = db.query(User).all()
+def get_all_users(db: Session, offset: int, limit: int):
+    users = db.query(User).order_by(User.created_at).offset(offset).limit(limit).all()
     return users
 
 def get_user_by_id(db: Session, user_id: str):
