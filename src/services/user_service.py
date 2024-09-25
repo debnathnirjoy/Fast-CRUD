@@ -1,10 +1,12 @@
 from sqlalchemy.orm import Session
 from src.repositories import user_repository
-from src.schemas.user import UserCreateSchema, UserUpdateSchema
+from src.schemas.user import UserCreateSchema, UserUpdateSchema, UserRetrieveSchema
 from fastapi import status, HTTPException
+from src.utils.password_utils import get_password_hash
 
 
 def create_user(db: Session, user: UserCreateSchema):
+    user.password = get_password_hash(user.password)
     return user_repository.create_user(db, user)
 
 def get_all_users(db: Session):

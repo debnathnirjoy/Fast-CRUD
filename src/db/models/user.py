@@ -14,7 +14,7 @@ class User(Base):
     password: Mapped[str] = mapped_column(String(128), nullable=False)
     name: Mapped[str] = mapped_column(String(128), nullable=False)
     created_at: Mapped[DateTime] = mapped_column(DateTime, nullable=False, server_default=func.now())
-    updated_at: Mapped[DateTime] = mapped_column(DateTime, nullable=False, server_default=func.now(), server_onupdate=func.now())
+    updated_at: Mapped[DateTime] = mapped_column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
 
     def __repr__(self):
         return f"<User username: {self.username}>"
