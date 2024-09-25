@@ -7,8 +7,9 @@ from fastapi import status, HTTPException
 def create_user(db: Session, user: UserCreateSchema):
     return user_repository.create_user(db, user)
 
-def get_all_users(db: Session):
-    return user_repository.get_all_users(db)
+def get_all_users(db: Session, page: int, limit: int):
+    offset = (page - 1) * limit
+    return user_repository.get_all_users(db, offset, limit)
 
 def get_user_by_id(db: Session, user_id: str):
     return user_repository.get_user_by_id(db, user_id)

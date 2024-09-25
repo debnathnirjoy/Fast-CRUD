@@ -1,4 +1,5 @@
-from fastapi import Depends, status, HTTPException, APIRouter
+from fastapi import Depends, status, HTTPException, APIRouter, Query
+from sqlalchemy.sql.annotation import Annotated
 from src.schemas.user import UserRetrieveSchema, UserUpdateSchema, UserCreateSchema
 from sqlalchemy.orm import Session
 from src.db.database import get_db
@@ -9,8 +10,10 @@ user_router = APIRouter()
 
 
 @user_router.get('/', response_model=list[UserRetrieveSchema])
-def get_all_users(db_session: Session = Depends(get_db)) -> list[UserRetrieveSchema]:
-    users = user_service.get_all_users(db_session)
+def get_all_users(page: int = Query(1, description="page number", ge=1),
+                  limit: int = Query(3, description="number of items to skip", ge=1, le=100),
+                  db_session: Session = Depends(get_db)) -> list[UserRetrieveSchema]:
+    users = user_service.get_all_users(db_session, page, limit)
     return users
 
 
