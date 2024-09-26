@@ -14,6 +14,7 @@ papertrail_handler = SysLogHandler(address=(config.PAPERTRAIL_HOST, config.PAPER
 
 stream_handler.setFormatter(log_format)
 file_handler.setFormatter(log_format)
+papertrail_handler.setFormatter(log_format)
 
 logger = logging.getLogger("fast-crud-api")
 logger.setLevel(log_level)
