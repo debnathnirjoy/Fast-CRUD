@@ -15,24 +15,8 @@ def register_logger(app: FastAPI):
         end_time = time.time()
         process_time = end_time - start_time
 
-        log_dict = {
-            "level": logging.getLevelName(logger.level),
-            "host": request.client.host,
-            "port": request.client.port,
-            "method": request.method,
-            "url": request.url.path,
-            "status_code": response.status_code,
-            "process_time": process_time,
-        }
-        # log_message = f"{request.client.host}:{request.client.port} - {request.method} - {request.url.path} - {response.status_code} completed after {process_time}s"
-
-        status_code_prefix = (str(response.status_code))[0]
-
-        # if status_code_prefix == "4" or status_code_prefix == "5":
-        #     log_dict["error_detail"] = response.body.detail
-        #     logger.error(log_dict)
-        # else:
-        logger.info(log_dict)
+        log_message = f"{logging.getLevelName(logger.level)} - {request.client.host}:{request.client.port} - {request.method} - {request.url.path} - {response.status_code} completed after {process_time}s"
+        logger.info(log_message)
 
         return response
 
