@@ -14,7 +14,10 @@ def get_all_users(db: Session, page: int, limit: int):
     return user_repository.get_all_users(db, offset, limit)
 
 def get_user_by_id(db: Session, user_id: str):
-    return user_repository.get_user_by_id(db, user_id)
+    user = user_repository.get_user_by_id(db, user_id)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User not found')
+    return user
 
 def update_user_by_id(db: Session, user_id: str, updated_user: UserUpdateSchema):
     update_count = user_repository.update_user_by_id(db, user_id, updated_user)
