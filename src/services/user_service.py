@@ -10,7 +10,7 @@ def create_user(db: Session, user: UserCreateSchema) -> UserRetrieveSchema:
     user.password = get_password_hash(user.password)
     new_user = user_repository.create_user(db, user)
     if new_user is None:
-        logger.error(f"Error creating user - request body: {user}")
+        logger.error(f"Error occurred while creating user")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error occurred while creating user")
     logger.info(f"created user {new_user.id}")
     return new_user
@@ -32,7 +32,7 @@ def update_user_by_id(db: Session, user_id: str, updated_user: UserUpdateSchema)
         logger.info(f"User {user_id} has been updated")
         return updated_user.model_dump(exclude_unset=True)
     else:
-        logger.error(f"error occurred while updating user {user_id} - request body: {updated_user}")
+        logger.error(f"error occurred while updating user {user_id}")
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="User not found")
 
 def delete_user_by_id(db: Session, user_id: str):

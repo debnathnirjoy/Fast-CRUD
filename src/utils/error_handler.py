@@ -48,8 +48,12 @@ async def handle_all_exceptions(request:Request, exception:any) -> JSONResponse:
         messages = ["Unexpected error"]
         status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
-    log_message = f"{logging.getLevelName(logger.level)} - {request.client.host}:{request.client.port} - {request.method} - {request.url.path} - {status_code} - error details: {exception}"
-    logger.error(log_message)
+    if status_code == status.HTTP_500_INTERNAL_SERVER_ERROR:
+        log_message = f"{logging.getLevelName(logger.level)} - {request.client.host}:{request.client.port} - {request.method} - {request.url.path} - {status_code} - error details: {exception}"
+        logger.error(log_message)
+    else:
+        log_message = f"{logging.getLevelName(logger.level)} - {request.client.host}:{request.client.port} - {request.method} - {request.url.path} - {status_code} - error details: {messages}"
+        logger.error(log_message)
 
     error_data: dict = {'error': {'code': status_code, 'messages': messages}}
     return JSONResponse(content=error_data, status_code=status_code)
