@@ -25,7 +25,7 @@ def get_user_by_id(user_id: str, db_session: Session = Depends(get_db)) -> UserR
     return user
 
 
-@user_router.patch('/{user_id}', response_model=UserUpdateSchema, status_code=status.HTTP_200_OK)
+@user_router.put('/{user_id}', response_model=UserUpdateSchema, status_code=status.HTTP_200_OK)
 def update_user_by_id(user_id: str, updated_fields: UserUpdateSchema, db_session: Session = Depends(get_db)) -> UserUpdateSchema:
     user = user_service.update_user_by_id(db_session, user_id, updated_fields)
     return user

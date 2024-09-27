@@ -21,15 +21,7 @@ class UserCreateSchema(UserBaseSchema):
 
 
 class UserUpdateSchema(UserBaseSchema):
-    username: str | None = Field(None, min_length=3, max_length=50)
-    name: str | None = Field(None, min_length=3, max_length=128)
-    email: EmailStr | None = Field(None, min_length=3, max_length=128)
-
-    @model_validator(mode='after')
-    def at_least_one_field_set(self):
-        if not any([self.username, self.name, self.email]):
-            raise ValueError('At least one of username, name, or email must be set')
-        return self
+    ...
 
 class UserRetrieveSchema(UserBaseSchema):
     id: str = Field(...)
