@@ -1,7 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from src.db.models.user import User
 from src.db.database import engine, Base
 from src.routes.user import user_router
+from src.utils.error_handler import register_error_handlers
 
 
 Base.metadata.create_all(bind=engine)
@@ -19,6 +20,7 @@ app = FastAPI(
     docs_url=f"{VERSION_PREFIX}/docs",
 )
 
+register_error_handlers(app)
 
 @app.get("/")
 async def read_root():
