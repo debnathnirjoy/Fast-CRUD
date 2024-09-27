@@ -1,19 +1,10 @@
-from http.client import HTTPException
-from typing import Callable
-
-from fastapi import FastAPI
 from src.db.models.user import User
 from src.db.database import engine, Base
 from src.routes.user import user_router
 from src.middlewares.logger import register_logger
 from src.utils.custom_response import CustomResponse
-
-
-from typing import Any, Callable
-from fastapi.requests import Request
-from fastapi.responses import JSONResponse
-from fastapi import FastAPI, status
-from sqlalchemy.exc import SQLAlchemyError
+from fastapi import FastAPI
+from src.utils.error_handler import register_error_handlers
 
 Base.metadata.create_all(bind=engine)
 
@@ -31,12 +22,13 @@ app = FastAPI(
     default_response_class=CustomResponse,
 )
 
-
+register_error_handlers(app)
 register_logger(app)
 
 
 @app.get("/")
 async def read_root():
+    x = 100/0
     return {"message": "Hello, World!"}
 
 
