@@ -5,6 +5,8 @@ from fastapi.responses import JSONResponse
 from fastapi import FastAPI, status
 from starlette.requests import Request
 from src.core.constants import DatabaseError
+from src.utils.logger import logger
+import logging
 
 def create_sqlalchemy_error_responses(exception):
     message: str
@@ -31,12 +33,10 @@ def create_validation_error_responses(exception):
 
 
 async def handle_all_exceptions(request:Request, exception:any) -> JSONResponse:
-    print(exception)
     messages:list = []
     status_code:int
 
     if isinstance(exception, StarletteHTTPException):
-        print("here")
         messages.append(exception.detail)
         status_code = exception.status_code
     elif isinstance(exception, IntegrityError):
@@ -48,8 +48,10 @@ async def handle_all_exceptions(request:Request, exception:any) -> JSONResponse:
         messages = ["Unexpected error"]
         status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
 
-    error_data: dict = {'error': {'code': status_code, 'message': messages}}
-    print(error_data)
+    log_message = f"{logging.getLevelName(logger.level)} - {request.client.host}:{request.client.port} - {request.method} - {request.url.path} - {status_code} - error details: {exception}"
+    logger.error(log_message)
+
+    error_data: dict = {'error': {'code': status_code, 'messages': messages}}
     return JSONResponse(content=error_data, status_code=status_code)
 
 
