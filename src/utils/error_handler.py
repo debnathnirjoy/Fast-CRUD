@@ -13,7 +13,7 @@ def create_sqlalchemy_error_responses(exception):
     status_code: int
     if exception.orig.args[0] == DatabaseError.DuplicateEntry.value:
         status_code = 409
-        if 'email' in exception.args:
+        if 'email' in str(exception.orig.args):
             message = "Email already exists"
         else:
             message = "Username already exists"
@@ -60,8 +60,8 @@ async def handle_all_exceptions(request:Request, exception:any) -> JSONResponse:
 
 
 def register_error_handlers(app:FastAPI):
-    app.add_exception_handler(StarletteHTTPException, handle_all_exceptions) #
-    app.add_exception_handler(SQLAlchemyError, handle_all_exceptions) #Handle SQLAlchemy errors
-    app.add_exception_handler(RequestValidationError, handle_all_exceptions) #Handle validation errors
+    app.add_exception_handler(StarletteHTTPException, handle_all_exceptions)
+    app.add_exception_handler(SQLAlchemyError, handle_all_exceptions)
+    app.add_exception_handler(RequestValidationError, handle_all_exceptions)
     app.add_exception_handler(NotImplementedError, handle_all_exceptions)
     app.add_exception_handler(Exception, handle_all_exceptions)
