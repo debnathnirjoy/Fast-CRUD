@@ -3,7 +3,7 @@ from src.db.database import engine, Base
 from src.routes.user import user_router
 from src.middlewares.logger import register_logger
 from src.utils.custom_response import CustomResponse
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from src.utils.error_handler import register_error_handlers
 
 Base.metadata.create_all(bind=engine)
@@ -27,8 +27,8 @@ register_logger(app)
 
 
 @app.get("/")
-async def read_root():
-    x = 100/0
+async def read_root(request: Request):
+    print("Request from read root: ", request.client.host)
     return {"message": "Hello, World!"}
 
 
